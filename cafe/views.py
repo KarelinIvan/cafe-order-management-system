@@ -41,7 +41,7 @@ class ChangeStatus(UpdateView):
 
 def calculate_revenue(request):
     """ Для расчёта общей выручки """
-    paid_orders = Order.objects.filter(status='paid')
+    paid_orders = Order.objects.filter(status='PD')
     # Проверяем наличие оплаченных заказов
     if paid_orders.exists():
         # Рассчитываем выручку как сумму total_price всех оплаченных заказов
