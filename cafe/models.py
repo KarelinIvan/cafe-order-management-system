@@ -6,10 +6,9 @@ class Order(models.Model):
 
     class Status(models.TextChoices):
         """ Класс для управления статусом заказа """
-
-    WAITING = 'WT', 'В ожидании'
-    READY = 'RD', 'Готово'
-    PAID = 'PD', 'Оплачено'
+        WAITING = 'WT', 'В ожидании'
+        READY = 'RD', 'Готово'
+        PAID = 'PD', 'Оплачено'
 
     table_number = models.IntegerField(verbose_name='Номер стола', help_text='Укажите номер стола')
     items = models.JSONField(verbose_name='список заказанных блюд с ценами', help_text='Укажите блюдо')
@@ -18,4 +17,4 @@ class Order(models.Model):
                               verbose_name='Статус заказа')
 
     def __str__(self):
-        return f'Заказ №{self.pk}, столик {self.table_number}'
+        return f'Заказ №{self.pk}, столик {self.table_number}, Статус: {self.status}'
