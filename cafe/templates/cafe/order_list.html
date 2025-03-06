@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Список заказов</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Номер стола</th>
+        <th>Общая стоимость</th>
+        <th>Статус</th>
+        <th>Действия</th>
+    </tr>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.table_number }}</td>
+        <td>{{ order.total_price }}</td>
+        <td>{{ order.get_status_display }}</td>
+        <td>
+            <a href="{% url 'cafe:delete_order' order.pk %}">Удалить</a> |
+            <a href="{% url 'cafe:change_status' order.pk %}">Изменить статус</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'cafe:add_order' %}">Добавить заказ</a><br>
+<a href="{% url 'cafe:calculate_revenue' %}">Рассчитать выручку</a>
+{% endblock %}
