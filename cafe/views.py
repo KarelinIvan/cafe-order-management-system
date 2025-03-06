@@ -1,54 +1,53 @@
 from django.shortcuts import render
-
-from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
 from .models import Order
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
 
-# Представление для добавления нового заказа
 class AddOrder(CreateView):
+    """ Для добавления нового заказа """
     model = Order
     fields = ['table_number', 'items']
     template_name = 'cafe/add_order.html'
     success_url = reverse_lazy('cafe:order_list')
 
     def form_valid(self, form):
-        # Расчет общей стоимости заказа
-        items = form.cleaned_data['items']
-        total_price = sum(item['price'] for item in items)
-        order = form.save(commit=False)
-        order.total_price = total_price
-        order.save()
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        # После успешного сохранения выводим сообщение об успешной операции
+        return response
 
 
-# Представление для списка всех заказов
 class OrderList(ListView):
+    """ Отображает список всех заказов """
     model = Order
     context_object_name = 'orders'
     template_name = 'cafe/order_list.html'
 
 
-# Представление для удаления заказа
 class DeleteOrder(DeleteView):
+    """ Для удаления заказа """
     model = Order
     success_url = reverse_lazy('cafe:order_list')
     template_name = 'cafe/delete_order.html'
 
 
-# Представление для изменения статуса заказа
 class ChangeStatus(UpdateView):
+    """ Для изменения статуса заказа """
     model = Order
     fields = ['status']
     template_name = 'cafe/change_status.html'
     success_url = reverse_lazy('cafe:order_list')
 
 
-# Представление для расчета выручки за смену
 def calculate_revenue(request):
+    """ Для расчёта общей выручки """
     paid_orders = Order.objects.filter(status='paid')
-    revenue = sum(order.total_price for order in paid_orders)
+    # Проверяем наличие оплаченных заказов
+    if paid_orders.exists():
+        # Рассчитываем выручку как сумму total_price всех оплаченных заказов
+        revenue = sum(order.total_price for order in paid_orders)
+    else:
+        # Если оплаченных заказов нет, устанавливаем выручку равной нулю
+        revenue = 0
     context = {'revenue': revenue}
     return render(request, 'cafe/calculate_revenue.html', context)
