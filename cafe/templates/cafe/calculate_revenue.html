@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Выручка за смену</h1>
+<p>Общий объем выручки: {{ revenue }}</p>
+<a href="{% url 'cafe:order_list' %}">Вернуться к списку заказов</a>
+{% endblock %}
